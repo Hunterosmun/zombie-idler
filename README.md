@@ -19,6 +19,8 @@ Actions:
 
 - Run (this increases distance from zombies)
 - Scavenge (this will get new equipment and materials, will reduce the distance by _X_ amount)
+  - Will only appear at distance 100
+  - will consume 50 ticks
 - Build wall (this will stop the distance from reducing for _X_ amount of time)
 - Equip (this will be it's own page, so players can see what they are wearing and what they have) (equiping may take time to accomplish)
 - Research (this will reduce the distance by _large X_ amount of time, give research points for upgrading the player in _magical_ way?)
