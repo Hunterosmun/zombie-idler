@@ -115,68 +115,75 @@ function handleBrowserRequest(request, responseStatusCode, responseHeaders, remi
 // app/root.jsx
 var root_exports = {};
 __export(root_exports, {
-  default: () => App
+  default: () => App,
+  links: () => links
 });
 import { Links, LiveReload, Meta, Outlet, Scripts } from "@remix-run/react";
+
+// app/tailwind.css
+var tailwind_default = "/build/_assets/tailwind-Z5OGL5S2.css";
+
+// app/root.jsx
 import { jsxDEV as jsxDEV2 } from "react/jsx-dev-runtime";
+var links = () => [{ rel: "stylesheet", href: tailwind_default }];
 function App() {
   return /* @__PURE__ */ jsxDEV2("html", { children: [
     /* @__PURE__ */ jsxDEV2("head", { children: [
       /* @__PURE__ */ jsxDEV2("link", { rel: "icon", href: "data:image/x-icon;base64,AA" }, void 0, !1, {
         fileName: "app/root.jsx",
-        lineNumber: 7,
+        lineNumber: 10,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV2(Meta, {}, void 0, !1, {
         fileName: "app/root.jsx",
-        lineNumber: 8,
+        lineNumber: 11,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV2(Links, {}, void 0, !1, {
         fileName: "app/root.jsx",
-        lineNumber: 9,
+        lineNumber: 12,
         columnNumber: 9
       }, this)
     ] }, void 0, !0, {
       fileName: "app/root.jsx",
-      lineNumber: 6,
+      lineNumber: 9,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV2("body", { children: [
-      /* @__PURE__ */ jsxDEV2("h1", { children: "Hello world!!!!!!!!" }, void 0, !1, {
-        fileName: "app/root.jsx",
-        lineNumber: 12,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV2(Outlet, {}, void 0, !1, {
-        fileName: "app/root.jsx",
-        lineNumber: 13,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV2(Scripts, {}, void 0, !1, {
+    /* @__PURE__ */ jsxDEV2("body", { className: "dark:bg-gray-500", children: [
+      /* @__PURE__ */ jsxDEV2("h1", { className: "dark:text-white", children: "Zombie Idler" }, void 0, !1, {
         fileName: "app/root.jsx",
         lineNumber: 15,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV2(LiveReload, {}, void 0, !1, {
+      /* @__PURE__ */ jsxDEV2(Outlet, {}, void 0, !1, {
         fileName: "app/root.jsx",
         lineNumber: 16,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV2(Scripts, {}, void 0, !1, {
+        fileName: "app/root.jsx",
+        lineNumber: 18,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV2(LiveReload, {}, void 0, !1, {
+        fileName: "app/root.jsx",
+        lineNumber: 19,
         columnNumber: 9
       }, this)
     ] }, void 0, !0, {
       fileName: "app/root.jsx",
-      lineNumber: 11,
+      lineNumber: 14,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
     fileName: "app/root.jsx",
-    lineNumber: 5,
+    lineNumber: 8,
     columnNumber: 5
   }, this);
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-RSZXAQLF.js", imports: ["/build/_shared/chunk-ZWGWGGVF.js", "/build/_shared/chunk-XU7DNSPJ.js", "/build/_shared/chunk-AH5NKM33.js", "/build/_shared/chunk-V6HEKR6L.js", "/build/_shared/chunk-UWV35TSL.js", "/build/_shared/chunk-GIAAE3CH.js", "/build/_shared/chunk-BOXFZXVX.js", "/build/_shared/chunk-PNG5AS42.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-R7E5ZCDO.js", imports: void 0, hasAction: !1, hasLoader: !1, hasErrorBoundary: !1 } }, version: "6e945ba6", hmr: { runtime: "/build/_shared/chunk-V6HEKR6L.js", timestamp: 1696857629496 }, url: "/build/manifest-6E945BA6.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-RSZXAQLF.js", imports: ["/build/_shared/chunk-ZWGWGGVF.js", "/build/_shared/chunk-XU7DNSPJ.js", "/build/_shared/chunk-AH5NKM33.js", "/build/_shared/chunk-V6HEKR6L.js", "/build/_shared/chunk-UWV35TSL.js", "/build/_shared/chunk-GIAAE3CH.js", "/build/_shared/chunk-BOXFZXVX.js", "/build/_shared/chunk-PNG5AS42.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-UQLPR64B.js", imports: void 0, hasAction: !1, hasLoader: !1, hasErrorBoundary: !1 } }, version: "629ce53d", hmr: { runtime: "/build/_shared/chunk-V6HEKR6L.js", timestamp: 1696858812783 }, url: "/build/manifest-629CE53D.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = {}, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {

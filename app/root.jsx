@@ -1,4 +1,7 @@
 import { Links, LiveReload, Meta, Outlet, Scripts } from "@remix-run/react";
+import stylesheet from "./tailwind.css";
+
+export const links = () => [{ rel: "stylesheet", href: stylesheet }];
 
 export default function App() {
   return (
@@ -8,8 +11,8 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
-        <h1>Hello world!!!!!!!!</h1>
+      <body className="dark:bg-gray-500">
+        <h1 className="dark:text-white">Zombie Idler</h1>
         <Outlet />
 
         <Scripts />

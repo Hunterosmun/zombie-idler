@@ -17,6 +17,9 @@ import {
   __toESM
 } from "/build/_shared/chunk-PNG5AS42.js";
 
+// app/tailwind.css
+var tailwind_default = "/build/_assets/tailwind-Z5OGL5S2.css";
+
 // app/root.jsx
 var import_jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
 if (!window.$RefreshReg$ || !window.$RefreshSig$ || !window.$RefreshRuntime$) {
@@ -36,60 +39,63 @@ if (import.meta) {
     //@ts-expect-error
     "app/root.jsx"
   );
-  import.meta.hot.lastModified = "1696857629043.9983";
 }
+var links = () => [{
+  rel: "stylesheet",
+  href: tailwind_default
+}];
 function App() {
   return /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("html", { children: [
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("head", { children: [
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("link", { rel: "icon", href: "data:image/x-icon;base64,AA" }, void 0, false, {
         fileName: "app/root.jsx",
-        lineNumber: 25,
+        lineNumber: 29,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Meta, {}, void 0, false, {
         fileName: "app/root.jsx",
-        lineNumber: 26,
+        lineNumber: 30,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Links, {}, void 0, false, {
         fileName: "app/root.jsx",
-        lineNumber: 27,
+        lineNumber: 31,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "app/root.jsx",
-      lineNumber: 24,
+      lineNumber: 28,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("body", { children: [
-      /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("h1", { children: "Hello world!!!!!!!!" }, void 0, false, {
+    /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("body", { className: "dark:bg-gray-500", children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("h1", { className: "dark:text-white", children: "Zombie Idler" }, void 0, false, {
         fileName: "app/root.jsx",
-        lineNumber: 30,
+        lineNumber: 34,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Outlet, {}, void 0, false, {
         fileName: "app/root.jsx",
-        lineNumber: 31,
+        lineNumber: 35,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Scripts, {}, void 0, false, {
         fileName: "app/root.jsx",
-        lineNumber: 33,
+        lineNumber: 37,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(LiveReload, {}, void 0, false, {
         fileName: "app/root.jsx",
-        lineNumber: 34,
+        lineNumber: 38,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "app/root.jsx",
-      lineNumber: 29,
+      lineNumber: 33,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
     fileName: "app/root.jsx",
-    lineNumber: 23,
+    lineNumber: 27,
     columnNumber: 10
   }, this);
 }
@@ -99,6 +105,7 @@ $RefreshReg$(_c, "App");
 window.$RefreshReg$ = prevRefreshReg;
 window.$RefreshSig$ = prevRefreshSig;
 export {
-  App as default
+  App as default,
+  links
 };
-//# sourceMappingURL=/build/root-R7E5ZCDO.js.map
+//# sourceMappingURL=/build/root-UQLPR64B.js.map
