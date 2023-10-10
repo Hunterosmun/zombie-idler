@@ -58,35 +58,35 @@ const startingGame = {
   scavengingTimer: 0
 }
 
-export default function Game(doomscription) {
-  const state = State.parse(startingGame)
-  function changeDistance(amount) {
-    state.distanceFromZombie += amount
-    doomscription(state)
-  }
-
-  const tick = setInterval(() => {
-    console.log('tick~~~!!!!!!')
-    changeDistance(-1)
-  }, 1000)
-
-  function run() {
-    const speed = Object.values(state.equipment).reduce(
-      (acc, item) =>
-        item?.effects.reduce((acc2, effect) => {
-          if (effect.type === 'RUNNING_EFFECT') acc2 += effect.speed
-          return acc2
-        }, acc) ?? acc,
-      1
-    )
-    changeDistance(speed)
-  }
-  return {
-    changeDistance,
-    scavenge() {
-      console.log('dontcha wish scavenging did something?')
-    },
-    run,
-    tick
+export function gameReducer(state = startingGame, action) {
+  switch (action.type) {
+    case 'RUN': {
+      const speed = Object.values(state.equipment).reduce(
+        (acc, item) =>
+          item?.effects.reduce((acc2, effect) => {
+            if (effect.type === 'RUNNING_EFFECT') acc2 += effect.speed
+            return acc2
+          }, acc) ?? acc,
+        1
+      )
+      return {
+        ...state,
+        distanceFromZombie: state.distanceFromZombie + speed
+      }
+    }
+    case 'TICK': {
+      return {
+        ...state,
+        distanceFromZombie: state.distanceFromZombie - 1
+      }
+    }
+    case 'DEATH': {
+      return {
+        ...state,
+        distanceFromZombie: 0
+      }
+    }
+    default:
+      return state
   }
 }

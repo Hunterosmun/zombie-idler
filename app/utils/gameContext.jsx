@@ -1,25 +1,29 @@
 import React from 'react'
-import Game from '../../server/game'
 
-const GameContext = React.createContext()
+import { gameReducer } from '../../server/game'
+
+const StateContext = React.createContext()
+const DispatchContext = React.createContext()
 
 export function useGame() {
-  const context = React.useContext(GameContext)
-  return context
+  const state = React.useContext(StateContext)
+  const dispatch = React.useContext(DispatchContext)
+  return [state, dispatch]
 }
 
 export function Provider({ children }) {
-  const [game, setGame] = React.useState(null)
-  const [state, setState] = React.useState(null)
+  const [state, dispatch] = React.useReducer(gameReducer)
   React.useEffect(() => {
-    setGame((game) => {
-      if (game) return game
-      return Game((state) => setState({ ...state }))
-    })
+    const ticker = setInterval(() => {
+      dispatch({ type: 'TICK' })
+    }, 1000)
+    return () => clearInterval(ticker)
   }, [])
   return (
-    <GameContext.Provider value={{ game, state }}>
-      {children}
-    </GameContext.Provider>
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        {children}
+      </DispatchContext.Provider>
+    </StateContext.Provider>
   )
 }
