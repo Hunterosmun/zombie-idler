@@ -10,10 +10,22 @@ const Category = z.enum([
   'material'
 ])
 
+const RunningSpeedEffect = z.object({
+  type: z.literal('RUNNING_SPEED'),
+  speed: z.number().int()
+})
+
+const ScavengeSpeedEffect = z.object({
+  type: z.literal('SCAVENGE_SPEED'),
+  scavengeSpeed: z.number().int()
+})
+
+const Effect = z.union([RunningSpeedEffect, ScavengeSpeedEffect])
+
 const Item = z.object({
   type: Category,
   name: z.string(),
-  effect: z.string()
+  effect: z.array(Effect)
 })
 
 const State = z.object({
@@ -28,14 +40,29 @@ const State = z.object({
   }),
   inventory: z.array(Item),
   showInventory: z.boolean(),
-  scavengingTimer: z.integer()
+  scavengingTimer: z.number().int()
 })
 
-export default function Game() {
-  const state = State.parse()
+const startingGame = {
+  distanceFromZombie: 25,
+  equipment: {
+    head: null,
+    top: null,
+    bottom: null,
+    shoes: null,
+    necklace: null,
+    ring: null
+  },
+  inventory: [],
+  showInventory: false,
+  scavengingTimer: 0
+}
+
+export default function Game(doomscription) {
+  const state = State.parse(startingGame)
   function changeDistance(amount) {
     state.distanceFromZombie += amount
-    return state
+    doomscription(state)
   }
 
   const tick = setInterval(() => {
@@ -44,15 +71,20 @@ export default function Game() {
   }, 1000)
 
   function run() {
-    changeDistance(1)
+    const speed = Object.values(state.equipment).reduce(
+      (acc, item) =>
+        item?.effects.reduce((acc2, effect) => {
+          if (effect.type === 'RUNNING_EFFECT') acc2 += effect.speed
+          return acc2
+        }, acc) ?? acc,
+      1
+    )
+    changeDistance(speed)
   }
   return {
     changeDistance,
     scavenge() {
       console.log('dontcha wish scavenging did something?')
-    },
-    init() {
-      return State.parse({})
     },
     run,
     tick
