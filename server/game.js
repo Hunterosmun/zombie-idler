@@ -61,6 +61,7 @@ const startingGame = {
 export function gameReducer(state = startingGame, action) {
   switch (action.type) {
     case 'RUN': {
+      if (state.distanceFromZombie === 0) return state
       const speed = Object.values(state.equipment).reduce(
         (acc, item) =>
           item?.effects.reduce((acc2, effect) => {
@@ -71,19 +72,13 @@ export function gameReducer(state = startingGame, action) {
       )
       return {
         ...state,
-        distanceFromZombie: state.distanceFromZombie + speed
+        distanceFromZombie: Math.max(distanceFromZombie + speed, 0)
       }
     }
     case 'TICK': {
       return {
         ...state,
-        distanceFromZombie: state.distanceFromZombie - 1
-      }
-    }
-    case 'DEATH': {
-      return {
-        ...state,
-        distanceFromZombie: 0
+        distanceFromZombie: Math.max(distanceFromZombie - 1, 0)
       }
     }
     default:
