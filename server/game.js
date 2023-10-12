@@ -25,7 +25,7 @@ const Effect = z.union([RunningSpeedEffect, ScavengeSpeedEffect])
 const Item = z.object({
   type: Category,
   name: z.string(),
-  effect: z.array(Effect)
+  effects: z.array(Effect)
 })
 
 const State = z.object({
@@ -40,7 +40,8 @@ const State = z.object({
   }),
   inventory: z.array(Item),
   showInventory: z.boolean(),
-  scavengingTimer: z.number().int()
+  scavengingTimer: z.number().int(),
+  allowScavenging: z.boolean()
 })
 
 const startingGame = {
@@ -55,30 +56,61 @@ const startingGame = {
   },
   inventory: [],
   showInventory: false,
+  allowScavenging: false,
   scavengingTimer: 0
 }
 
-export function gameReducer(state = startingGame, action) {
+/**
+ * @param {z.infer<typeof State>} state
+ * @param {*} action
+ * @returns {z.infer<typeof State>}
+ */
+export function gameReducer(state = State.parse(startingGame), action) {
+  if (state.distanceFromZombie <= 0) return state
   switch (action.type) {
     case 'RUN': {
       if (state.distanceFromZombie === 0) return state
+      if (state.scavengingTimer !== 0) return state
       const speed = Object.values(state.equipment).reduce(
         (acc, item) =>
           item?.effects.reduce((acc2, effect) => {
-            if (effect.type === 'RUNNING_EFFECT') acc2 += effect.speed
+            switch (effect.type) {
+              case 'RUNNING_SPEED':
+                return acc2 + effect.speed
+            }
             return acc2
           }, acc) ?? acc,
         1
       )
+      let allowScavenging = state.allowScavenging
+      const distanceFromZombie = Math.max(state.distanceFromZombie + speed, 0)
+      if (distanceFromZombie >= 100) allowScavenging = true
       return {
         ...state,
-        distanceFromZombie: Math.max(distanceFromZombie + speed, 0)
+        distanceFromZombie,
+        allowScavenging
       }
     }
     case 'TICK': {
+      let scavengingTimer = state.scavengingTimer
+      let showInventory = state.showInventory
+      if (scavengingTimer === 1) {
+        // TODO: get new item
+        showInventory = true
+      }
       return {
         ...state,
-        distanceFromZombie: Math.max(distanceFromZombie - 1, 0)
+        distanceFromZombie: state.distanceFromZombie - 1,
+        scavengingTimer: Math.max(scavengingTimer - 1, 0),
+        showInventory
+      }
+    }
+    case 'SCAVENGE': {
+      if (!state.allowScavenging) return state
+      if (state.scavengingTimer !== 0) return state
+      return {
+        ...state,
+        scavengingTimer: 50
       }
     }
     default:

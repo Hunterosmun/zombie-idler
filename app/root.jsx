@@ -21,9 +21,9 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="dark:bg-gray-500 h-full w-full">
+      <body className="dark:bg-gray-700 h-full w-full">
         <h1 className="dark:text-white">Zombie Idler</h1>
-        <nav className="w-full">
+        <nav className="w-full dark:text-white">
           <ul className="flex justify-evenly">
             <li className="hover:border-b-2 hover:border-b-white">
               <Link to="/home">Home</Link>
