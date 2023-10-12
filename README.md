@@ -25,4 +25,11 @@ Actions:
 - Equip (this will be it's own page, so players can see what they are wearing and what they have) (equiping may take time to accomplish)
 - Research (this will reduce the distance by _large X_ amount of time, give research points for upgrading the player in _magical_ way?)
 
-A potential thing for the person to research would be a way to change the tick speed??
+## Research ideas:
+
+- A button that will stop the player from scavenging if scavenging would kill them
+- A button that will auto-scavenge when they are above a certain tick?
+- A way to automate running...?
+- A way to change the tick speed
+- Ability to have scavenge tick just skip instead of actively counting down (clicking it would just subtract the 50 or whatever from your distance)
+- Decrease time it takes to scavenge
