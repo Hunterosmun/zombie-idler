@@ -1,6 +1,6 @@
 import {
   Links,
-  Link,
+  NavLink,
   LiveReload,
   Meta,
   Outlet,
@@ -21,15 +21,28 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="dark:bg-gray-700 h-full w-full">
-        <h1 className="dark:text-white">Zombie Idler</h1>
+      <body className="dark:bg-gray-700 h-full w-full pt-5 pl-5">
+        <h1 className="dark:text-white pl-5 whitespace-nowrap absolute">
+          Zombie Idler
+        </h1>
         <nav className="w-full dark:text-white">
           <ul className="flex justify-evenly">
-            <li className="hover:border-b-2 hover:border-b-white">
-              <Link to="/home">Home</Link>
+            <li>
+              <NavLink
+                to="/home"
+                className="[&.active]:border-b-2 hover:border-b-2 hover:border-b-white"
+              >
+                Home
+              </NavLink>
             </li>
-            <li className="hover:border-b-2 hover:border-b-white">
-              <Link to="/caseysPlace">Casey's House</Link>
+            <li>
+              <NavLink
+                to="/caseysPlace"
+                className="[&.active]:border-b-2 hover:border-b-2 hover:border-b-white"
+              >
+                Inventory
+                {/* (we still need to actually make this do something) */}
+              </NavLink>
             </li>
           </ul>
         </nav>
