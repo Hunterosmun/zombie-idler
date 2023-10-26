@@ -15,7 +15,7 @@ export const links = () => [{ rel: 'stylesheet', href: stylesheet }]
 
 export default function App() {
   return (
-    <html>
+    <html className="dark:text-white">
       <head>
         <link rel="icon" href="data:image/x-icon;base64,AA" />
         <Meta />
