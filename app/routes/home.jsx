@@ -10,6 +10,22 @@ export default function Home() {
   const safetyLevel = getSafetyLevel(state)
   const zdist = state.distanceFromZombie
 
+  const effects = Object.values(state.equipment).reduce(
+    (acc, item) => {
+      let scavengeChange = 0
+      let speedChange = 0
+      item?.effects?.forEach((ef) => {
+        if (ef.type === 'SCAVENGE_SPEED') scavengeChange = ef.scavengeSpeed
+        if (ef.type === 'RUNNING_SPEED') speedChange = ef.speed
+      })
+      return {
+        speed: acc.speed + speedChange,
+        scavengeSpeed: acc.scavengeSpeed + scavengeChange
+      }
+    },
+    { speed: 1, scavengeSpeed: 50 }
+  )
+
   return (
     <div className="px-6 mt-6 dark:text-white">
       <div
@@ -38,6 +54,7 @@ export default function Home() {
             >
               RUN
             </button>
+            <span className="pl-2">Speed: {effects.speed}</span>
           </div>
           {state.allowScavenging && (
             <div>
@@ -49,7 +66,7 @@ export default function Home() {
                 Scavenge
               </button>
               {state.scavengingTimer === 0
-                ? 'Scavenging will consume 50 ticks (You cannot run during this time)'
+                ? `Scavenging will consume ${effects.scavengeSpeed} ticks (You cannot run during this time)`
                 : `Time left scavenging: ${state.scavengingTimer}`}
             </div>
           )}
