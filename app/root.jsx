@@ -37,7 +37,7 @@ export default function App() {
             </li>
             <li>
               <NavLink
-                to="/caseysPlace"
+                to="/inventory"
                 className="[&.active]:border-b-2 hover:border-b-2 hover:border-b-white"
               >
                 Inventory
