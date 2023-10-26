@@ -231,6 +231,18 @@ export function gameReducer(state = State.parse(startingGame), action) {
         equipment: { ...state.equipment, [item.type]: item }
       }
     }
+    case 'UNEQUIP': {
+      if (state.scavengingTimer !== 0) return state
+      if (!action.payload.type) return state
+      const type = action.payload.type
+      if (!state.equipment[type]) return state
+
+      return {
+        ...state,
+        inventory: [...state.inventory, state.equipment[type]],
+        equipment: { ...state.equipment, [type]: null }
+      }
+    }
     default:
       return state
   }

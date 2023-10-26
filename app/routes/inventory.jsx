@@ -31,12 +31,72 @@ export default function Inventory() {
           Equipped
         </h2>
         <ul>
-          <li>Head: {state.equipment.head?.name ?? ':('}</li>
-          <li>Top: {state.equipment.top?.name ?? ':('}</li>
-          <li>Bottom: {state.equipment.bottom?.name ?? ':('}</li>
-          <li>Shoes: {state.equipment.shoes?.name ?? ':('}</li>
-          <li>Necklace: {state.equipment.necklace?.name ?? ':('}</li>
-          <li>Ring: {state.equipment.ring?.name ?? ':('}</li>
+          <li>
+            Head:{' '}
+            <button
+              onClick={() => {
+                if (!state.equipment.head.id) return
+                dispatch({ type: 'UNEQUIP', payload: { type: 'head' } })
+              }}
+            >
+              {state.equipment.head?.name ?? ':('}
+            </button>
+          </li>
+          <li>
+            Top:{' '}
+            <button
+              onClick={() => {
+                if (!state.equipment.top.id) return
+                dispatch({ type: 'UNEQUIP', payload: { type: 'top' } })
+              }}
+            >
+              {state.equipment.top?.name ?? ':('}
+            </button>
+          </li>
+          <li>
+            Bottom:{' '}
+            <button
+              onClick={() => {
+                if (!state.equipment.bottom.id) return
+                dispatch({ type: 'UNEQUIP', payload: { type: 'bottom' } })
+              }}
+            >
+              {state.equipment.bottom?.name ?? ':('}
+            </button>
+          </li>
+          <li>
+            Shoes:{' '}
+            <button
+              onClick={() => {
+                if (!state.equipment.shoes.id) return
+                dispatch({ type: 'UNEQUIP', payload: { type: 'shoes' } })
+              }}
+            >
+              {state.equipment.shoes?.name ?? ':('}
+            </button>
+          </li>
+          <li>
+            Necklace:{' '}
+            <button
+              onClick={() => {
+                if (!state.equipment.necklace.id) return
+                dispatch({ type: 'UNEQUIP', payload: { type: 'necklace' } })
+              }}
+            >
+              {state.equipment.necklace?.name ?? ':('}
+            </button>
+          </li>
+          <li>
+            Ring:{' '}
+            <button
+              onClick={() => {
+                if (!state.equipment.ring.id) return
+                dispatch({ type: 'UNEQUIP', payload: { type: 'ring' } })
+              }}
+            >
+              {state.equipment.ring?.name ?? ':('}
+            </button>
+          </li>
         </ul>
         <h3 className="border-b-2 dark:border-b-white border-b-black mb-2 mt-4">
           Effects:
