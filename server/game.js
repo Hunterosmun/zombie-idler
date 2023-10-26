@@ -28,17 +28,21 @@ const Item = z.object({
   effects: z.array(Effect)
 })
 
+const AcquiredItem = Item.extend({
+  id: z.string()
+})
+
 const State = z.object({
   distanceFromZombie: z.number().int().nonnegative(),
   equipment: z.object({
-    head: Item.nullable(),
-    top: Item.nullable(),
-    bottom: Item.nullable(),
-    shoes: Item.nullable(),
-    necklace: Item.nullable(),
-    ring: Item.nullable()
+    head: AcquiredItem.nullable(),
+    top: AcquiredItem.nullable(),
+    bottom: AcquiredItem.nullable(),
+    shoes: AcquiredItem.nullable(),
+    necklace: AcquiredItem.nullable(),
+    ring: AcquiredItem.nullable()
   }),
-  inventory: z.array(Item),
+  inventory: z.array(AcquiredItem),
   showInventory: z.boolean(),
   scavengingTimer: z.number().int(),
   allowScavenging: z.boolean()
@@ -156,7 +160,6 @@ export function gameReducer(state = State.parse(startingGame), action) {
   if (state.distanceFromZombie <= 0) return state
   switch (action.type) {
     case 'RUN': {
-      if (state.distanceFromZombie === 0) return state
       if (state.scavengingTimer !== 0) return state
       const speed = Object.values(state.equipment).reduce(
         (acc, item) =>
@@ -184,7 +187,7 @@ export function gameReducer(state = State.parse(startingGame), action) {
       let inventory = state.inventory
       if (scavengingTimer === 1) {
         const item = Item.parse(pickRandom(scavengingItems))
-        inventory = [item, ...inventory]
+        inventory = [{ ...item, id: crypto.randomUUID() }, ...inventory]
         showInventory = true
       }
       return {
@@ -198,9 +201,46 @@ export function gameReducer(state = State.parse(startingGame), action) {
     case 'SCAVENGE': {
       if (!state.allowScavenging) return state
       if (state.scavengingTimer !== 0) return state
+      const effectModifier = Object.values(state.equipment)
+        .filter(Boolean)
+        .flatMap((item) => item.effects)
+        .filter((effect) => effect.type === 'SCAVENGE_SPEED')
+        .reduce((total, effect) => total + effect.scavengeSpeed, 0)
       return {
         ...state,
-        scavengingTimer: 50
+        scavengingTimer: Math.max(50 + effectModifier, 1)
+      }
+    }
+    case 'EQUIP': {
+      if (state.scavengingTimer !== 0) return state
+      if (!action.payload.itemId) return state
+
+      const item = state.inventory.find(
+        (item) => item.id === action.payload.itemId
+      )
+      if (!item) return state
+
+      let inventory = state.inventory.filter((itm) => item !== itm)
+      if (state.equipment[item.type]) {
+        inventory = [...inventory, state.equipment[item.type]]
+      }
+
+      return {
+        ...state,
+        inventory,
+        equipment: { ...state.equipment, [item.type]: item }
+      }
+    }
+    case 'UNEQUIP': {
+      if (state.scavengingTimer !== 0) return state
+      if (!action.payload.type) return state
+      const type = action.payload.type
+      if (!state.equipment[type]) return state
+
+      return {
+        ...state,
+        inventory: [...state.inventory, state.equipment[type]],
+        equipment: { ...state.equipment, [type]: null }
       }
     }
     default:
