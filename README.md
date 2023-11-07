@@ -33,3 +33,9 @@ Actions:
 - A way to change the tick speed
 - Ability to have scavenge tick just skip instead of actively counting down (clicking it would just subtract the 50 or whatever from your distance)
 - Decrease time it takes to scavenge
+
+## Plans:
+
+- Make "Read a book" action, takes longer than scavenge, gives research points (this will lead to researching things)
+- Give items durability, they will run out while researched things won't
+- Ability to dismantle items in order to get material to repair other items (FIRST need to research ability to repair?)
