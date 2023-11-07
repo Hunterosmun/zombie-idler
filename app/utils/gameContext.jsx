@@ -11,12 +11,16 @@ export function useGame() {
   return [state, dispatch]
 }
 
+const TICKS_PER_SECOND = 60
+
 export function Provider({ children }) {
   const [state, dispatch] = React.useReducer(gameReducer)
   React.useEffect(() => {
+    let count = 0
     const ticker = setInterval(() => {
-      dispatch({ type: 'TICK' })
-    }, 1000)
+      dispatch({ type: 'TICK', payload: { count: count + 1 } })
+      count = (count + 1) % TICKS_PER_SECOND
+    }, 1000 / TICKS_PER_SECOND)
     return () => clearInterval(ticker)
   }, [])
   return (

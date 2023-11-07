@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import scavengingData from './inventory'
+
 const Category = z.enum([
   'head',
   'top',
@@ -28,12 +30,16 @@ const Item = z.object({
   effects: z.array(Effect)
 })
 
+const scavengingItems = z.array(Item).parse(scavengingData)
+
 const AcquiredItem = Item.extend({
   id: z.string()
 })
 
 const State = z.object({
   distanceFromZombie: z.number().int().nonnegative(),
+  zombieInterval: z.number().int().nonnegative(),
+  zombieStride: z.number().int().nonnegative(),
   equipment: z.object({
     head: AcquiredItem.nullable(),
     top: AcquiredItem.nullable(),
@@ -45,11 +51,15 @@ const State = z.object({
   inventory: z.array(AcquiredItem),
   showInventory: z.boolean(),
   scavengingTimer: z.number().int(),
+  scavengeInterval: z.number().int(),
   allowScavenging: z.boolean()
 })
 
+/** @type {z.infer<typeof State>} */
 const startingGame = {
   distanceFromZombie: 25,
+  zombieInterval: 60,
+  zombieStride: 1,
   equipment: {
     head: null,
     top: null,
@@ -61,78 +71,9 @@ const startingGame = {
   inventory: [],
   showInventory: false,
   allowScavenging: false,
+  scavengeInterval: 60,
   scavengingTimer: 0
 }
-
-// 'head',
-// 'top',
-// 'bottom',
-// 'shoes',
-// 'necklace',
-// 'ring',
-// 'material'
-const scavengingItems = z.array(Item).parse([
-  {
-    type: 'shoes',
-    name: 'Intro shoes',
-    effects: [{ type: 'RUNNING_SPEED', speed: 2 }]
-  },
-  { type: 'material', name: "Casey's imortal soul (fragment)", effects: [] },
-  {
-    type: 'head',
-    name: 'Intro hat',
-    effects: [{ type: 'SCAVENGE_SPEED', scavengeSpeed: -5 }]
-  },
-  { type: 'material', name: "Rock (from Casey's garden)", effects: [] },
-  {
-    type: 'ring',
-    name: 'Magic intro ring (Epic)',
-    effects: [
-      { type: 'RUNNING_SPEED', speed: 5 },
-      { type: 'SCAVENGE_SPEED', scavengeSpeed: -5 }
-    ]
-  },
-  {
-    type: 'shoes',
-    name: 'Olympic shoes (Legendary)',
-    effects: [{ type: 'RUNNING_SPEED', speed: 10 }]
-  },
-  {
-    type: 'necklace',
-    name: 'Teeth of your enemies (on a string)',
-    effects: [{ type: 'SCAVENGE_SPEED', scavengeSpeed: -5 }]
-  },
-  {
-    type: 'bottom',
-    name: 'Sweat pants of laziness',
-    effects: [{ type: 'RUNNING_SPEED', speed: -5 }]
-  },
-  {
-    type: 'bottom',
-    name: 'Sweat pants of laziness (Legendary)',
-    effects: [{ type: 'RUNNING_SPEED', speed: -15 }]
-  },
-  {
-    type: 'bottom',
-    name: 'Running short shorts',
-    effects: [{ type: 'RUNNING_SPEED', speed: 2 }]
-  },
-  {
-    type: 'bottom',
-    name: 'Shorter running short shorts (Legendary)',
-    effects: [{ type: 'RUNNING_SPEED', speed: 5 }]
-  },
-  {
-    type: 'top',
-    name: 'Triathalon shirt (number 672 still pinned on the back)',
-    effects: [{ type: 'RUNNING_SPEED', speed: 2 }]
-  },
-  {
-    type: 'shoes',
-    name: 'Terrible shoes filled with nails, snails, and fire',
-    effects: [{ type: 'RUNNING_SPEED', speed: -5 }]
-  }
-])
 
 /**
  * @template T
@@ -153,6 +94,24 @@ function random(min, max) {
 
 /**
  * @param {z.infer<typeof State>} state
+ */
+
+function gatherEffects(state) {
+  return Object.values(state.equipment)
+    .filter((item) => item !== null)
+    .flatMap((item) => item.effects)
+}
+
+/**
+ * @param {number} a
+ * @param {number} b
+ */
+function sum(a, b) {
+  return a + b
+}
+
+/**
+ * @param {z.infer<typeof State>} state
  * @param {*} action
  * @returns {z.infer<typeof State>}
  */
@@ -161,17 +120,13 @@ export function gameReducer(state = State.parse(startingGame), action) {
   switch (action.type) {
     case 'RUN': {
       if (state.scavengingTimer !== 0) return state
-      const speed = Object.values(state.equipment).reduce(
-        (acc, item) =>
-          item?.effects.reduce((acc2, effect) => {
-            switch (effect.type) {
-              case 'RUNNING_SPEED':
-                return acc2 + effect.speed
-            }
-            return acc2
-          }, acc) ?? acc,
-        1
-      )
+      const speed = gatherEffects(state)
+        .filter((effect) => effect.type === 'RUNNING_SPEED')
+        .map((effect) => effect.speed)
+        .reduce(sum, 1)
+      console.log({ speed })
+      console.log('HELLOOOOOOOOOOOOOOOOOOOOOOOO')
+
       let allowScavenging = state.allowScavenging
       const distanceFromZombie = Math.max(state.distanceFromZombie + speed, 0)
       if (distanceFromZombie >= 100) allowScavenging = true
@@ -182,30 +137,43 @@ export function gameReducer(state = State.parse(startingGame), action) {
       }
     }
     case 'TICK': {
+      const { count } = action.payload
       let scavengingTimer = state.scavengingTimer
       let showInventory = state.showInventory
       let inventory = state.inventory
-      if (scavengingTimer === 1) {
-        const item = Item.parse(pickRandom(scavengingItems))
-        inventory = [{ ...item, id: crypto.randomUUID() }, ...inventory]
-        showInventory = true
+
+      const zombieInterval = state.zombieInterval
+      const zombieShouldRun = count % zombieInterval === 0
+      const distanceFromZombie = zombieShouldRun
+        ? state.distanceFromZombie - state.zombieStride
+        : state.distanceFromZombie
+
+      const scavengeShouldRun = count % state.scavengeInterval === 0
+      if (scavengeShouldRun) {
+        if (scavengingTimer === 1) {
+          const item = Item.parse(pickRandom(scavengingItems))
+          inventory = [{ ...item, id: crypto.randomUUID() }, ...inventory]
+          showInventory = true
+        }
+        scavengingTimer = Math.max(scavengingTimer - 1, 0)
       }
+
       return {
         ...state,
-        distanceFromZombie: state.distanceFromZombie - 1,
-        scavengingTimer: Math.max(scavengingTimer - 1, 0),
+        distanceFromZombie,
+        scavengingTimer,
         showInventory,
         inventory
       }
     }
     case 'SCAVENGE': {
       if (!state.allowScavenging) return state
-      if (state.scavengingTimer !== 0) return state
-      const effectModifier = Object.values(state.equipment)
-        .filter(Boolean)
-        .flatMap((item) => item.effects)
+      if (state.scavengingTimer !== 0) return
+
+      const effectModifier = gatherEffects(state)
         .filter((effect) => effect.type === 'SCAVENGE_SPEED')
-        .reduce((total, effect) => total + effect.scavengeSpeed, 0)
+        .map((effect) => effect.scavengeSpeed)
+        .reduce(sum, 0)
       return {
         ...state,
         scavengingTimer: Math.max(50 + effectModifier, 1)
