@@ -24,7 +24,9 @@ const ScavengeSpeedEffect = z.object({
 
 const Effect = z.union([RunningSpeedEffect, ScavengeSpeedEffect])
 
+/** @typedef {z.infer<typeof Item>} Item */
 const Item = z.object({
+  id: z.string(),
   type: Category,
   name: z.string(),
   effects: z.array(Effect)
@@ -33,7 +35,7 @@ const Item = z.object({
 const scavengingItems = z.array(Item).parse(scavengingData)
 
 const AcquiredItem = Item.extend({
-  id: z.string()
+  count: z.number().int()
 })
 
 const State = z.object({
@@ -48,7 +50,7 @@ const State = z.object({
     necklace: AcquiredItem.nullable(),
     ring: AcquiredItem.nullable()
   }),
-  inventory: z.array(AcquiredItem),
+  inventory: z.record(AcquiredItem),
   showInventory: z.boolean(),
   scavengingTimer: z.number().int(),
   scavengeInterval: z.number().int(),
@@ -68,7 +70,7 @@ const startingGame = {
     necklace: null,
     ring: null
   },
-  inventory: [],
+  inventory: {},
   showInventory: false,
   allowScavenging: false,
   scavengeInterval: 60,
@@ -124,8 +126,6 @@ export function gameReducer(state = State.parse(startingGame), action) {
         .filter((effect) => effect.type === 'RUNNING_SPEED')
         .map((effect) => effect.speed)
         .reduce(sum, 1)
-      console.log({ speed })
-      console.log('HELLOOOOOOOOOOOOOOOOOOOOOOOO')
 
       let allowScavenging = state.allowScavenging
       const distanceFromZombie = Math.max(state.distanceFromZombie + speed, 0)
@@ -152,7 +152,11 @@ export function gameReducer(state = State.parse(startingGame), action) {
       if (scavengeShouldRun) {
         if (scavengingTimer === 1) {
           const item = Item.parse(pickRandom(scavengingItems))
-          inventory = [{ ...item, id: crypto.randomUUID() }, ...inventory]
+          const exist = inventory[item.id]
+          inventory = exist
+            ? { ...inventory, [item.id]: { ...exist, count: exist.count + 1 } }
+            : { ...inventory, [item.id]: { ...item, count: 1 } }
+
           showInventory = true
         }
         scavengingTimer = Math.max(scavengingTimer - 1, 0)
@@ -183,19 +187,11 @@ export function gameReducer(state = State.parse(startingGame), action) {
       if (state.scavengingTimer !== 0) return state
       if (!action.payload.itemId) return state
 
-      const item = state.inventory.find(
-        (item) => item.id === action.payload.itemId
-      )
+      const item = state.inventory[action.payload.itemId]
       if (!item) return state
-
-      let inventory = state.inventory.filter((itm) => item !== itm)
-      if (state.equipment[item.type]) {
-        inventory = [...inventory, state.equipment[item.type]]
-      }
 
       return {
         ...state,
-        inventory,
         equipment: { ...state.equipment, [item.type]: item }
       }
     }
@@ -207,7 +203,6 @@ export function gameReducer(state = State.parse(startingGame), action) {
 
       return {
         ...state,
-        inventory: [...state.inventory, state.equipment[type]],
         equipment: { ...state.equipment, [type]: null }
       }
     }

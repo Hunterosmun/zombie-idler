@@ -39,3 +39,8 @@ Actions:
 - Make "Read a book" action, takes longer than scavenge, gives research points (this will lead to researching things)
 - Give items durability, they will run out while researched things won't
 - Ability to dismantle items in order to get material to repair other items (FIRST need to research ability to repair?)
+
+## Brainstorms
+
+- Max distance from zombies? Maybe at 50K distance you start going towards zombies or something? Like they're a giant circle around you that you can't fully avoid?
+- Once you have X fragments of Casey's soul you can... take out a credit card in his name...?

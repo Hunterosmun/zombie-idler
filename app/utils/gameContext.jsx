@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { gameReducer } from '../../server/game'
+import { gameReducer } from '../server/game'
 
 const StateContext = React.createContext()
 const DispatchContext = React.createContext()
