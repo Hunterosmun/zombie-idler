@@ -187,19 +187,11 @@ export function gameReducer(state = State.parse(startingGame), action) {
       if (state.scavengingTimer !== 0) return state
       if (!action.payload.itemId) return state
 
-      const item = state.inventory.find(
-        (item) => item.id === action.payload.itemId
-      )
+      const item = state.inventory[action.payload.itemId]
       if (!item) return state
-
-      let inventory = state.inventory.filter((itm) => item !== itm)
-      if (state.equipment[item.type]) {
-        inventory = [...inventory, state.equipment[item.type]]
-      }
 
       return {
         ...state,
-        inventory,
         equipment: { ...state.equipment, [item.type]: item }
       }
     }
@@ -211,7 +203,6 @@ export function gameReducer(state = State.parse(startingGame), action) {
 
       return {
         ...state,
-        inventory: [...state.inventory, state.equipment[type]],
         equipment: { ...state.equipment, [type]: null }
       }
     }
