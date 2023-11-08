@@ -13,14 +13,15 @@ export default function Inventory() {
           Backpack
         </h1>
         <ul>
-          {state.inventory.map((item, i) => (
+          {Object.values(state.inventory).map((item, i) => (
             <li key={item.name + i}>
               <button
+                disabled={state.scavengingTimer !== 0}
                 onClick={() =>
                   dispatch({ type: 'EQUIP', payload: { itemId: item.id } })
                 }
               >
-                {item.name}
+                {item.name} X {item.count}
               </button>
             </li>
           ))}
