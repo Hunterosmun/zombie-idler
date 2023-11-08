@@ -1,5 +1,7 @@
 import React from 'react'
+import cx from 'clsx'
 import { useGame } from '../utils/gameContext'
+import * as Icons from '../components/icons'
 
 export default function Inventory() {
   const [state, dispatch] = useGame()
@@ -14,7 +16,16 @@ export default function Inventory() {
         </h1>
         <ul>
           {Object.values(state.inventory).map((item, i) => (
-            <li key={item.name + i}>
+            <li
+              className={cx(
+                state.scavengingTimer !== 0 ?? 'text-gray-',
+                'relative'
+              )}
+              key={item.name + i}
+            >
+              {isEquipped(item.id, state) && (
+                <Icons.Person className="absolute -left-6" />
+              )}
               <button
                 disabled={state.scavengingTimer !== 0}
                 onClick={() =>
@@ -169,6 +180,10 @@ export default function Inventory() {
       </div>
     </div>
   )
+}
+
+function isEquipped(id, state) {
+  return Object.values(state.equipment).some((item) => item?.id === id)
 }
 
 function EffectsDisplay({ effect }) {
