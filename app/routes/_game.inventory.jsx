@@ -16,17 +16,14 @@ export default function Inventory() {
         </h1>
         <ul>
           {Object.values(state.inventory).map((item, i) => (
-            <li
-              className={cx(
-                state.scavengingTimer !== 0 ?? 'text-gray-',
-                'relative'
-              )}
-              key={item.name + i}
-            >
+            <li className="relative" key={item.name + i}>
               {isEquipped(item.id, state) && (
                 <Icons.Person className="absolute -left-6" />
               )}
               <button
+                className={cx(
+                  state.scavengingTimer !== 0 && 'text-white text-opacity-20'
+                )}
                 disabled={state.scavengingTimer !== 0}
                 onClick={() =>
                   dispatch({ type: 'EQUIP', payload: { itemId: item.id } })
@@ -120,7 +117,7 @@ export default function Inventory() {
                 <div>
                   Head:
                   {state.equipment.head.effects.map((effect) => (
-                    <EffectsDisplay effect={effect} />
+                    <EffectComponent text={getEffectString(effect)} />
                   ))}
                 </div>
               )}
@@ -130,7 +127,7 @@ export default function Inventory() {
                 <div>
                   Top:
                   {state.equipment.top.effects.map((effect) => (
-                    <EffectsDisplay effect={effect} />
+                    <EffectComponent text={getEffectString(effect)} />
                   ))}
                 </div>
               )}
@@ -140,7 +137,7 @@ export default function Inventory() {
                 <div>
                   Bottom:
                   {state.equipment.bottom.effects.map((effect) => (
-                    <EffectsDisplay effect={effect} />
+                    <EffectComponent text={getEffectString(effect)} />
                   ))}
                 </div>
               )}
@@ -150,7 +147,7 @@ export default function Inventory() {
                 <div>
                   Shoes:
                   {state.equipment.shoes.effects.map((effect) => (
-                    <EffectsDisplay effect={effect} />
+                    <EffectComponent text={getEffectString(effect)} />
                   ))}
                 </div>
               )}
@@ -160,7 +157,7 @@ export default function Inventory() {
                 <div>
                   Necklace:
                   {state.equipment.necklace.effects.map((effect) => (
-                    <EffectsDisplay effect={effect} />
+                    <EffectComponent text={getEffectString(effect)} />
                   ))}
                 </div>
               )}
@@ -170,7 +167,7 @@ export default function Inventory() {
                 <div>
                   Ring:
                   {state.equipment.ring.effects.map((effect) => (
-                    <EffectsDisplay effect={effect} />
+                    <EffectComponent text={getEffectString(effect)} />
                   ))}
                 </div>
               )}
@@ -186,13 +183,19 @@ function isEquipped(id, state) {
   return Object.values(state.equipment).some((item) => item?.id === id)
 }
 
-function EffectsDisplay({ effect }) {
-  if (effect.type === 'SCAVENGE_SPEED') {
-    return (
-      <span className="px-2">Scavenging takes {effect.scavengeSpeed} less</span>
-    )
-  } else if (effect.type === 'RUNNING_SPEED') {
-    return <span className="px-2">Running increased by {effect.speed}</span>
+function EffectComponent({ text }) {
+  return <span className="px-2">{text}</span>
+}
+function getEffectString(effect) {
+  switch (effect.type) {
+    case 'SCAVENGE_SPEED': {
+      return `Scavenging takes ${effect.scavengeSpeed} less`
+    }
+    case 'RUNNING_SPEED': {
+      return `Running increased by ${effect.speed}`
+    }
+    default: {
+      return 'Wut is dis??'
+    }
   }
-  return <span>Wut is dis????</span>
 }
