@@ -44,3 +44,4 @@ Actions:
 
 - Max distance from zombies? Maybe at 50K distance you start going towards zombies or something? Like they're a giant circle around you that you can't fully avoid?
 - Once you have X fragments of Casey's soul you can... take out a credit card in his name...?
+- Maybe have zombie speed be variable (or at least different from scavenging speed) so you can't predict which will finish first? Then maybe have a stop scavenging button.

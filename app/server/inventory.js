@@ -143,5 +143,11 @@ export default [
     type: 'shoes',
     name: 'Olympic shoes (Legendary)',
     effects: [{ type: 'RUNNING_SPEED', speed: 10 }]
+  },
+  {
+    id: 'CASEY024',
+    type: 'shoes',
+    name: 'Light-up shoes (they make you go fast)',
+    effects: [{ type: 'RUNNING_SPEED', speed: 15 }]
   }
 ]

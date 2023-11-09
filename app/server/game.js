@@ -189,6 +189,7 @@ export function gameReducer(state = State.parse(startingGame), action) {
 
       const item = state.inventory[action.payload.itemId]
       if (!item) return state
+      if (item.type === 'material') return state
 
       return {
         ...state,
