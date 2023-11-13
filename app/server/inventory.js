@@ -31,6 +31,18 @@ export default [
     effects: [{ type: 'SCAVENGE_SPEED', scavengeSpeed: -5 }]
   },
   {
+    id: 'KEITH007',
+    type: 'head',
+    name: 'Reading glasses',
+    effects: [{ type: 'READING_SPEED', readingSpeed: -50 }]
+  },
+  {
+    id: 'KEITH008',
+    type: 'head',
+    name: 'Reading glasses (Epic)',
+    effects: [{ type: 'READING_SPEED', readingSpeed: -150 }]
+  },
+  {
     id: 'CASEY006',
     type: 'necklace',
     name: 'Intro necklace',
@@ -58,13 +70,13 @@ export default [
     id: 'CASEY010',
     type: 'top',
     name: 'Triathalon shirt (number 672 still pinned on the back)',
-    effects: [{ type: 'RUNNING_SPEED', speed: 2 }]
+    effects: [{ type: 'RUNNING_SPEED', speed: 3 }]
   },
   {
     id: 'CASEY011',
     type: 'top',
     name: 'Sweat stained training shirt',
-    effects: [{ type: 'RUNNING_SPEED', speed: 1 }]
+    effects: [{ type: 'RUNNING_SPEED', speed: 2 }]
   },
   {
     id: 'CASEY012',

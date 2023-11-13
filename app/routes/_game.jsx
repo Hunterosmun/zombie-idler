@@ -30,6 +30,16 @@ export default function () {
               </NavLink>
             </li>
           )}
+          {!!state?.showResearch && (
+            <li>
+              <NavLink
+                to="/research"
+                className="[&.active]:border-b-2 hover:border-b-2 hover:border-b-white"
+              >
+                Research
+              </NavLink>
+            </li>
+          )}
         </ul>
       </nav>
       <Outlet />

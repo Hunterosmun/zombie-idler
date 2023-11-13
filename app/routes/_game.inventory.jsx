@@ -6,7 +6,8 @@ import * as Icons from '../components/icons'
 export default function Inventory() {
   const [state, dispatch] = useGame()
 
-  if (!state) return <div>Loading</div>
+  if (!state) return <div>Loading...</div>
+  const inventory = Object.values(state.inventory) || []
 
   return (
     <div className="flex justify-around pt-7">
@@ -15,7 +16,7 @@ export default function Inventory() {
           Backpack
         </h1>
         <ul>
-          {Object.values(state.inventory).map((item, i) => (
+          {inventory.map((item, i) => (
             <li className="relative" key={item.name + i}>
               {isEquipped(item.id, state) && (
                 <Icons.Person className="absolute -left-6" />
@@ -193,6 +194,9 @@ function getEffectString(effect) {
     }
     case 'RUNNING_SPEED': {
       return `Running increased by ${effect.speed}`
+    }
+    case 'READING_SPEED': {
+      return `Reading time decreased by ${effect.readingSpeed}`
     }
     default: {
       return 'Wut is dis??'

@@ -41,7 +41,11 @@ export default function Home() {
           'border-2 mb-2 w-60 flex items-center flex-col p-2'
         )}
       >
-        {safetyLevel === 'dead' ? 'DEAD' : zdist}
+        {safetyLevel === 'dead'
+          ? 'DEAD'
+          : state.busyAction === 'READ_BOOK'
+          ? 'such a good plot!'
+          : zdist}
         <div className="border-t-2 border-gray-300">Distance from Zombies</div>
       </div>
       {safetyLevel !== 'dead' && (
@@ -50,7 +54,7 @@ export default function Home() {
             <button
               onClick={() => dispatch({ type: 'RUN' })}
               className="bg-gray-500 px-5 py-2 rounded hover:bg-gray-600 active:bg-gray-700 mb-2 disabled:bg-gray-700 disabled:text-gray-400 border-2 border-transparent disabled:border-black"
-              disabled={state.scavengingTimer > 0}
+              disabled={state.busyAction}
             >
               RUN
             </button>
@@ -61,7 +65,7 @@ export default function Home() {
               <button
                 onClick={() => dispatch({ type: 'SCAVENGE' })}
                 className="bg-gray-500 px-5 py-2 rounded hover:bg-gray-600 active:bg-gray-700 mb-2 disabled:bg-gray-700 disabled:text-gray-400 border-2 border-transparent disabled:border-black mr-2"
-                disabled={state.scavengingTimer > 0}
+                disabled={state.busyAction}
               >
                 Scavenge
               </button>
@@ -70,8 +74,23 @@ export default function Home() {
                 : `Time left scavenging: ${state.scavengingTimer}`}
             </div>
           )}
+          {state.allowReading && (
+            <div>
+              <button
+                onClick={() => dispatch({ type: 'READ_BOOK' })}
+                className="bg-gray-500 px-5 py-2 rounded hover:bg-gray-600 active:bg-gray-700 mb-2 disabled:bg-gray-700 disabled:text-gray-400 border-2 border-transparent disabled:border-black mr-2"
+                disabled={state.busyAction}
+              >
+                Read a book
+              </button>
+              {state.busyAction == 'READ_BOOK'
+                ? 'Pulled into the book, you basically forget about zombies entirely'
+                : 'This will consume a lot of time.'}
+            </div>
+          )}
         </>
       )}
+      <pre>{JSON.stringify(state, null, 2)}</pre>
     </div>
   )
 }
