@@ -32,7 +32,7 @@ Actions:
 - A way to automate running...?
 - A way to change the tick speed
 - Ability to have scavenge tick just skip instead of actively counting down (clicking it would just subtract the 50 or whatever from your distance)
-- Decrease time it takes to scavenge
+- Decrease time it takes to scavenge (or increase the speed the tick changes for it?)
 
 ## Plans:
 
@@ -45,3 +45,5 @@ Actions:
 - Max distance from zombies? Maybe at 50K distance you start going towards zombies or something? Like they're a giant circle around you that you can't fully avoid?
 - Once you have X fragments of Casey's soul you can... take out a credit card in his name...?
 - Maybe have zombie speed be variable (or at least different from scavenging speed) so you can't predict which will finish first? Then maybe have a stop scavenging button.
+- Have items that have really good AND really bad stats. So it makes your scavenging crazy good, but destroys your running speed, or things like that.
+- Cancel action button? So people don't just watch themselves die, but instead give up on an action and lose that progress?

@@ -22,7 +22,16 @@ const ScavengeSpeedEffect = z.object({
   scavengeSpeed: z.number().int()
 })
 
-const Effect = z.union([RunningSpeedEffect, ScavengeSpeedEffect])
+const ReadingSpeedEffect = z.object({
+  type: z.literal('READING_SPEED'),
+  readingSpeed: z.number().int()
+})
+
+const Effect = z.union([
+  RunningSpeedEffect,
+  ScavengeSpeedEffect,
+  ReadingSpeedEffect
+])
 
 /** @typedef {z.infer<typeof Item>} Item */
 const Item = z.object({
@@ -52,9 +61,15 @@ const State = z.object({
   }),
   inventory: z.record(AcquiredItem),
   showInventory: z.boolean(),
+  showResearch: z.boolean(),
+  researchPoints: z.number().int(),
   scavengingTimer: z.number().int(),
   scavengeInterval: z.number().int(),
-  allowScavenging: z.boolean()
+  allowScavenging: z.boolean(),
+  allowReading: z.boolean(),
+  readingTimer: z.number().int(),
+  readingInterval: z.number().int(),
+  busyAction: z.string().nullable()
 })
 
 /** @type {z.infer<typeof State>} */
@@ -72,9 +87,15 @@ const startingGame = {
   },
   inventory: {},
   showInventory: false,
+  showResearch: false,
+  researchPoints: 0,
   allowScavenging: false,
   scavengeInterval: 60,
-  scavengingTimer: 0
+  scavengingTimer: 0,
+  allowReading: false,
+  readingTimer: 0,
+  readingInterval: 60,
+  busyAction: null
 }
 
 /**
@@ -121,26 +142,34 @@ export function gameReducer(state = State.parse(startingGame), action) {
   if (state.distanceFromZombie <= 0) return state
   switch (action.type) {
     case 'RUN': {
-      if (state.scavengingTimer !== 0) return state
+      if (state.busyAction) return state
       const speed = gatherEffects(state)
         .filter((effect) => effect.type === 'RUNNING_SPEED')
         .map((effect) => effect.speed)
         .reduce(sum, 1)
 
-      let allowScavenging = state.allowScavenging
+      let { allowScavenging, allowReading } = state
       const distanceFromZombie = Math.max(state.distanceFromZombie + speed, 0)
       if (distanceFromZombie >= 100) allowScavenging = true
+      if (distanceFromZombie >= 1000) allowReading = true
       return {
         ...state,
         distanceFromZombie,
-        allowScavenging
+        allowScavenging,
+        allowReading
       }
     }
     case 'TICK': {
       const { count } = action.payload
-      let scavengingTimer = state.scavengingTimer
-      let showInventory = state.showInventory
-      let inventory = state.inventory
+      let {
+        scavengingTimer,
+        showInventory,
+        inventory,
+        busyAction,
+        readingTimer,
+        showResearch,
+        researchPoints
+      } = state
 
       const zombieInterval = state.zombieInterval
       const zombieShouldRun = count % zombieInterval === 0
@@ -148,7 +177,10 @@ export function gameReducer(state = State.parse(startingGame), action) {
         ? state.distanceFromZombie - state.zombieStride
         : state.distanceFromZombie
 
-      const scavengeShouldRun = count % state.scavengeInterval === 0
+      const scavengeShouldRun =
+        state.busyAction === 'SCAVENGE' && count % state.scavengeInterval === 0
+      const readShouldRun =
+        state.busyAction === 'READ_BOOK' && count % state.readingInterval === 0
       if (scavengeShouldRun) {
         if (scavengingTimer === 1) {
           const item = Item.parse(pickRandom(scavengingItems))
@@ -158,8 +190,16 @@ export function gameReducer(state = State.parse(startingGame), action) {
             : { ...inventory, [item.id]: { ...item, count: 1 } }
 
           showInventory = true
+          busyAction = null
         }
         scavengingTimer = Math.max(scavengingTimer - 1, 0)
+      } else if (readShouldRun) {
+        if (readingTimer === 1) {
+          researchPoints += 1
+          showResearch = true
+          busyAction = null
+        }
+        readingTimer = Math.max(readingTimer - 1, 0)
       }
 
       return {
@@ -167,12 +207,16 @@ export function gameReducer(state = State.parse(startingGame), action) {
         distanceFromZombie,
         scavengingTimer,
         showInventory,
-        inventory
+        readingTimer,
+        inventory,
+        busyAction,
+        showResearch,
+        researchPoints
       }
     }
     case 'SCAVENGE': {
       if (!state.allowScavenging) return state
-      if (state.scavengingTimer !== 0) return
+      if (state.busyAction) return state
 
       const effectModifier = gatherEffects(state)
         .filter((effect) => effect.type === 'SCAVENGE_SPEED')
@@ -180,8 +224,14 @@ export function gameReducer(state = State.parse(startingGame), action) {
         .reduce(sum, 0)
       return {
         ...state,
-        scavengingTimer: Math.max(50 + effectModifier, 1)
+        scavengingTimer: Math.max(50 + effectModifier, 1),
+        busyAction: 'SCAVENGE'
       }
+    }
+    case 'READ_BOOK': {
+      if (!state.allowReading) return state
+      if (state.busyAction) return state
+      return { ...state, readingTimer: 300, busyAction: 'READ_BOOK' }
     }
     case 'EQUIP': {
       if (state.scavengingTimer !== 0) return state
